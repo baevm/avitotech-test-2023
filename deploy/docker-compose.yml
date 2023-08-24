@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  postgres:
+    container_name: segments-postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: segments-db
+    ports:
+      - 5432:5432
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  api:
+    container_name: segments-service
+    build:
+      context: ../
+      dockerfile: ./deploy/Dockerfile
+    environment:
+      - DB_DSN="postgres://postgres:123456@localhost/segments-db?sslmode=disable"
+    ports:
+      - 5000:5000
+    networks:
+      - postgres
+    depends_on:
+      - postgres
+  
+networks:
+  postgres:
+    driver: bridge
