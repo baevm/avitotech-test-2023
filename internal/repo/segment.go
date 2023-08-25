@@ -112,6 +112,7 @@ func (r Segment) AddUserSegments(ctx context.Context, userId int64, addSegments 
 	args := []any{userId}
 
 	// Готовим аргументы для запроса
+	// Добавялем 2 потому что первый аргумент это userId
 	for i, slug := range addSegments {
 		args = append(args, slug)
 		sb.WriteString(fmt.Sprintf("$%d", i+2))
@@ -122,7 +123,8 @@ func (r Segment) AddUserSegments(ctx context.Context, userId int64, addSegments 
 	}
 
 	// Закрываем строку запроса
-	sb.WriteString(")")
+	// Добавляем пропуск конфликта, если сегмент уже есть у пользователя
+	sb.WriteString(") ON CONFLICT DO NOTHING")
 
 	query := sb.String()
 
@@ -148,6 +150,7 @@ func (r Segment) DeleteUserSegments(ctx context.Context, userId int64, deleteSeg
 	args := []any{userId}
 
 	// Готовим аргументы для запроса
+	// Добавялем 2 потому что первый аргумент это userId
 	for i, slug := range deleteSegments {
 		args = append(args, slug)
 		sb.WriteString(fmt.Sprintf("$%d", i+2))
