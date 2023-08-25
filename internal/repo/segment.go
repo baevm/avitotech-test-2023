@@ -26,7 +26,7 @@ func (r Segment) Create(ctx context.Context, segment *models.Segment) error {
 	query := `
 		INSERT INTO segments (slug)
 		VALUES ($1)
-		RETURNING id, created_at
+		RETURNING created_at
 	`
 
 	args := []any{
@@ -35,7 +35,7 @@ func (r Segment) Create(ctx context.Context, segment *models.Segment) error {
 
 	err := r.DB.
 		QueryRow(ctx, query, args...).
-		Scan(&segment.Id, &segment.CreatedAt)
+		Scan(&segment.CreatedAt)
 
 	return err
 }
@@ -62,7 +62,7 @@ func (r Segment) GetUserSegments(ctx context.Context, userId int64) ([]*models.S
 		SELECT slug
 		FROM segments s
 		JOIN user_segments us
-		on s.id = us.segment_id
+		on s.slug = us.segment_slug
 		WHERE us.user_id = $1
 	`
 
@@ -100,11 +100,11 @@ func (r Segment) GetUserSegments(ctx context.Context, userId int64) ([]*models.S
 func (r Segment) AddUserSegments(ctx context.Context, userId int64, addSegments []string) (int64, error) {
 	var sb strings.Builder
 
-	// Сначала получаем id сегментов, которые нужно добавить
+	// Сначала получаем slug сегментов, которые нужно добавить
 	// Потом вставляем в user_segments
 	sb.WriteString(`
-	INSERT INTO user_segments (segment_id, user_id)
-	SELECT s.id, $1
+	INSERT INTO user_segments (segment_slug, user_id)
+	SELECT s.slug, $1
 	FROM segments s
 	WHERE s.slug IN (
 	`)
@@ -136,13 +136,13 @@ func (r Segment) AddUserSegments(ctx context.Context, userId int64, addSegments 
 func (r Segment) DeleteUserSegments(ctx context.Context, userId int64, deleteSegments []string) (int64, error) {
 	var sb strings.Builder
 
-	// Сначала получаем id сегментов, которые нужно удалить
+	// Сначала получаем slug сегментов, которые нужно удалить
 	// Потом удаляем из user_segments
 	sb.WriteString(`
 	DELETE FROM user_segments us
 	WHERE us.user_id = $1
-	AND us.segment_id IN (
-		SELECT s.id
+	AND us.segment_slug IN (
+		SELECT s.slug
 		FROM segments s
 		WHERE s.slug IN (
 	`)
