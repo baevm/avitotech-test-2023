@@ -83,3 +83,12 @@ compose:
 .PHONY: docker/build
 docker/build:
 	docker build --no-cache -t social-network -f ./deploy/Dockerfile .
+
+
+#=============================================================================
+#========================== SWAGGER ==========================================
+#=============================================================================
+## swagger: generates swagger docs using swaggo
+.PHONY: swagger
+swagger:
+	swag init -g cmd/api/main.go

@@ -1,0 +1,170 @@
+basePath: /
+definitions:
+  models.Segment:
+    properties:
+      slug:
+        type: string
+    type: object
+  segment.CreateRequest:
+    properties:
+      slug:
+        type: string
+    type: object
+  segment.DeleteRequest:
+    properties:
+      slug:
+        type: string
+    type: object
+  segment.GetSegmentsForUserRequest:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  segment.UpdateUserSegmentsRequest:
+    properties:
+      add_segments:
+        items:
+          type: string
+        type: array
+      delete_segments:
+        items:
+          type: string
+        type: array
+      user_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Тествое задание для Avitotech 2023
+  title: Avitotech Test 2023 API
+  version: "1.0"
+paths:
+  /segment:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление сегмента
+      parameters:
+      - description: Segment data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/segment.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Delete segment
+      tags:
+      - segment
+    post:
+      consumes:
+      - application/json
+      description: Создание сегмента
+      parameters:
+      - description: Segment data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/segment.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            properties:
+              created_at:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Create segment
+      tags:
+      - segment
+  /segment/user:
+    get:
+      consumes:
+      - application/json
+      description: Получение всех сегментов для пользователя
+      parameters:
+      - description: User data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/segment.GetSegmentsForUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Segment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Get user segments
+      tags:
+      - segment
+    post:
+      consumes:
+      - application/json
+      description: Добавление и удаление сегментов у пользователя
+      parameters:
+      - description: Segment data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/segment.UpdateUserSegmentsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              segments_added:
+                type: integer
+              segments_deleted:
+                type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Update user segments
+      tags:
+      - segment
+swagger: "2.0"

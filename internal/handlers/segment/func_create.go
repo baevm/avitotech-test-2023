@@ -11,6 +11,16 @@ type CreateRequest struct {
 	Slug string `json:"slug"`
 }
 
+// Create godoc
+// @Summary      Create segment
+// @Description  Создание сегмента
+// @Tags         segment
+// @Accept       json
+// @Produce      json
+// @Param        body  body  CreateRequest  true  "Segment data"
+// @Success      201  {object} object{created_at=string}
+// @Failure      400  {object} object{error=string}
+// @Router       /segment [post]
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
 
@@ -28,5 +38,5 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payload.WriteJSON(w, http.StatusOK, payload.Data{"created_at": segment.CreatedAt}, nil)
+	payload.WriteJSON(w, http.StatusCreated, payload.Data{"created_at": segment.CreatedAt}, nil)
 }

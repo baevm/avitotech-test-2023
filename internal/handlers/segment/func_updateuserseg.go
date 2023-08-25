@@ -12,6 +12,16 @@ type UpdateUserSegmentsRequest struct {
 	DeleteSegments []string `json:"delete_segments"`
 }
 
+// UpdateUserSegments godoc
+// @Summary      Update user segments
+// @Description  Добавление и удаление сегментов у пользователя
+// @Tags         segment
+// @Accept       json
+// @Produce      json
+// @Param        body  body  UpdateUserSegmentsRequest  true  "Segment data"
+// @Success      200  {object} object{segments_added=int,segments_deleted=int}
+// @Failure      400  {object} object{error=string}
+// @Router       /segment/user [post]
 func (h *handler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 	var req UpdateUserSegmentsRequest
 
