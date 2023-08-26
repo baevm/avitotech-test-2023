@@ -25,7 +25,7 @@ type handler struct {
 	config  *cfg.Config
 }
 
-func New(logger *zap.SugaredLogger, segment *service.Segment) Handler {
+func New(segment *service.Segment, logger *zap.SugaredLogger) Handler {
 	return &handler{
 		logger:  logger,
 		segment: segment,

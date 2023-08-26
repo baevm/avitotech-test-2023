@@ -7,9 +7,13 @@ import (
 )
 
 type Config struct {
-	DB_DSN    string `mapstructure:"DB_DSN"`
+	DB_DSN string `mapstructure:"DB_DSN"`
+
 	HTTP_HOST string `mapstructure:"HTTP_HOST"`
 	HTTP_PORT string `mapstructure:"HTTP_PORT"`
+
+	REDIS_HOST string `mapstructure:"REDIS_HOST"`
+	REDIS_PORT string `mapstructure:"REDIS_PORT"`
 }
 
 var cfg Config

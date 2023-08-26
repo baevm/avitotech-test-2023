@@ -98,25 +98,25 @@ func (r Segment) GetUserSegments(ctx context.Context, userId int64) ([]*models.S
 	return segments, nil
 }
 
-func (r Segment) AddUserSegments(ctx context.Context, userId int64, addSegments []string) (int64, error) {
+func (r Segment) AddUserSegments(ctx context.Context, userId int64, addSegments []string, ttl int64) (int64, error) {
 	var sb strings.Builder
 
 	// Сначала получаем slug сегментов, которые нужно добавить
 	// Потом вставляем в user_segments
 	sb.WriteString(`
-	INSERT INTO user_segments (segment_slug, user_id)
-	SELECT s.slug, $1
+	INSERT INTO user_segments (segment_slug, user_id, expire_at)
+	SELECT s.slug, $1, $2
 	FROM segments s
 	WHERE s.slug IN (
 	`)
 
-	args := []any{userId}
+	args := []any{userId, models.NewExpireDate(ttl)}
 
 	// Готовим аргументы для запроса
-	// Добавялем 2 потому что первый аргумент это userId
+	// Добавялем 3 потому что первый аргумент это userId
 	for i, slug := range addSegments {
 		args = append(args, slug)
-		sb.WriteString(fmt.Sprintf("$%d", i+2))
+		sb.WriteString(fmt.Sprintf("$%d", i+3))
 
 		if i != len(addSegments)-1 {
 			sb.WriteString(",")

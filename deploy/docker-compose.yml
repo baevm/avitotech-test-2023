@@ -27,6 +27,13 @@ services:
       - postgres
     depends_on:
       - postgres
+
+  redis:
+    container_name: segments-redis-queue
+    image: redis:latest
+    ports:
+      - 6379:6379
+    restart: unless-stopped
   
 networks:
   postgres:

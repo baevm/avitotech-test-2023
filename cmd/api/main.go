@@ -1,10 +1,14 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/dezzerlol/avitotech-test-2023/cfg"
 	"github.com/dezzerlol/avitotech-test-2023/internal/db"
 	"github.com/dezzerlol/avitotech-test-2023/internal/http"
+	"github.com/dezzerlol/avitotech-test-2023/internal/worker"
 	"github.com/dezzerlol/avitotech-test-2023/pkg/logger"
+	"github.com/hibiken/asynq"
 )
 
 // @title          Avitotech Test 2023 API
@@ -29,6 +33,21 @@ func main() {
 
 	defer db.Close()
 
-	server := http.New(logger, db)
+	redisOpts := asynq.RedisClientOpt{
+		Addr: fmt.Sprintf("%s:%s", cfg.Get().REDIS_HOST, cfg.Get().REDIS_PORT),
+	}
+
+	distributor := worker.NewTaskDistributor(redisOpts, logger)
+	processor := worker.NewTaskProcessor(redisOpts, logger, db)
+
+	go func() {
+		err := processor.Start()
+
+		if err != nil {
+			logger.Fatalf("Error starting task processor: %s", err)
+		}
+	}()
+
+	server := http.New(logger, db, distributor)
 	server.Run(cfg.Get().HTTP_HOST, cfg.Get().HTTP_PORT)
 }

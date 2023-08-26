@@ -9,13 +9,14 @@ import (
 type UpdateUserSegmentsRequest struct {
 	UserId         int64    `json:"user_id"`
 	AddSegments    []string `json:"add_segments"`
+	TTL            int64    `json:"ttl"`
 	DeleteSegments []string `json:"delete_segments"`
 }
 
 // UpdateUserSegments godoc
 // @Summary      Добавление/удаление сегментов у пользователя
-// @Description  Метод добавления пользователя в сегмент. Принимает список slug (названий) сегментов которые нужно добавить пользователю,
-// список slug (названий) сегментов которые нужно удалить у пользователя, id пользователя.
+// @Description  Метод добавления пользователя в сегмент. Принимает массив slug (названий) сегментов которые нужно добавить пользователю,
+// массив slug (названий) сегментов которые нужно удалить у пользователя, id пользователя, ttl (в секундах).
 // @Tags         segment
 // @Accept       json
 // @Produce      json
@@ -31,7 +32,13 @@ func (h *handler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	segmentsAdded, segmentsDeleted, err := h.segment.UpdateUserSegments(r.Context(), req.UserId, req.AddSegments, req.DeleteSegments)
+	segmentsAdded, segmentsDeleted, err := h.segment.UpdateUserSegments(
+		r.Context(),
+		req.UserId,
+		req.AddSegments,
+		req.TTL,
+		req.DeleteSegments,
+	)
 
 	if err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)

@@ -8,13 +8,14 @@ import (
 	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
+	"github.com/dezzerlol/avitotech-test-2023/internal/worker"
 )
 
 type SegmentRepo interface {
 	Create(ctx context.Context, segment *models.Segment) error
 	DeleteBySlug(ctx context.Context, segment *models.Segment) error
 
-	AddUserSegments(ctx context.Context, userId int64, addSegments []string) (int64, error)
+	AddUserSegments(ctx context.Context, userId int64, addSegments []string, ttl int64) (int64, error)
 	DeleteUserSegments(ctx context.Context, userId int64, deleteSegments []string) (int64, error)
 	GetUserSegments(ctx context.Context, userId int64) ([]*models.Segment, error)
 
@@ -23,11 +24,13 @@ type SegmentRepo interface {
 
 type Segment struct {
 	segmentRepo SegmentRepo
+	worker      worker.TaskDistributor
 }
 
-func NewSegment(segmentRepo SegmentRepo) *Segment {
+func NewSegment(segmentRepo SegmentRepo, worker worker.TaskDistributor) *Segment {
 	return &Segment{
 		segmentRepo: segmentRepo,
+		worker:      worker,
 	}
 }
 
@@ -43,16 +46,30 @@ func (s *Segment) UpdateUserSegments(
 	ctx context.Context,
 	userId int64,
 	addSegments []string,
+	ttl int64,
 	deleteSegments []string,
 ) (
 	segmentsAdded int64,
 	segmentsDeleted int64,
-	err error) {
-
+	err error,
+) {
 	if len(addSegments) > 0 {
-		segmentsAdded, err = s.segmentRepo.AddUserSegments(ctx, userId, addSegments)
+		segmentsAdded, err = s.segmentRepo.AddUserSegments(ctx, userId, addSegments, ttl)
 		if err != nil {
 			return segmentsAdded, segmentsDeleted, err
+		}
+
+		// Если задан TTL, то добавляем таски на удаление сегментов
+		if ttl > 0 {
+			for _, v := range addSegments {
+				payload := worker.SegmentExpirePayload{
+					UserID:      userId,
+					SegmentSlug: v,
+					ExpireAt:    ttl,
+				}
+
+				s.worker.ScheduleSegmentExpireTask(ctx, payload)
+			}
 		}
 	}
 

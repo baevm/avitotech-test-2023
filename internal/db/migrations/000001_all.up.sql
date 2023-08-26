@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS user_segments (
     segment_slug varchar (255) references segments(slug) NOT NULL,
     user_id bigint NOT NULL,
     created_at timestamptz NOT NULL DEFAULT now(),
+    expire_at timestamptz,
 
     PRIMARY KEY (user_id, segment_slug)
 );

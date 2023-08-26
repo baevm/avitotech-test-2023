@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/dezzerlol/avitotech-test-2023/internal/worker"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 )
@@ -17,12 +18,14 @@ import (
 type Server struct {
 	logger *zap.SugaredLogger
 	db     *pgxpool.Pool
+	worker worker.TaskDistributor
 }
 
-func New(logger *zap.SugaredLogger, db *pgxpool.Pool) *Server {
+func New(logger *zap.SugaredLogger, db *pgxpool.Pool, worker worker.TaskDistributor) *Server {
 	return &Server{
 		logger: logger,
 		db:     db,
+		worker: worker,
 	}
 }
 

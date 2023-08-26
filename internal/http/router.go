@@ -11,20 +11,21 @@ import (
 
 func (s *Server) setHTTPRouter() *chi.Mux {
 	r := chi.NewRouter()
+
 	r.Use(middleware.StripSlashes)
+	r.Use(middleware.Recoverer)
 
 	segmentRepo := repo.NewSegment(s.db)
 
-	segmentService := service.NewSegment(segmentRepo)
+	segmentService := service.NewSegment(segmentRepo, s.worker)
 
-	segmentHandler := segment.New(s.logger, segmentService)
+	segmentHandler := segment.New(segmentService, s.logger)
 
 	r.Post("/segment", segmentHandler.Create)
 	r.Delete("/segment", segmentHandler.Delete)
 
 	r.Post("/segment/user", segmentHandler.UpdateUserSegments)
 	r.Get("/segment/user", segmentHandler.GetSegmentsForUser)
-
 	r.Get("/segment/user/history", segmentHandler.GetUserHistory)
 
 	r.Get("/segments/reports/{fileName}", segmentHandler.DownloadReport)

@@ -92,3 +92,15 @@ docker/build:
 .PHONY: swagger
 swagger:
 	swag init -g cmd/api/main.go
+
+
+
+#=============================================================================
+#========================== OTHER ============================================
+#=============================================================================
+.PHONY: asynq-gui
+asynq-gui:
+	docker run -d --rm \
+    --name asynqmon \
+    -p 8081:8080 \
+    hibiken/asynqmon --redis-addr=host.docker.internal:6379
