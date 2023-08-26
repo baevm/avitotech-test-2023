@@ -20,6 +20,15 @@ definitions:
       user_id:
         type: integer
     type: object
+  segment.HistoryRequest:
+    properties:
+      month:
+        type: integer
+      user_id:
+        type: integer
+      year:
+        type: integer
+    type: object
   segment.UpdateUserSegmentsRequest:
     properties:
       add_segments:
@@ -44,7 +53,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Удаление сегмента
+      description: Метод удаления сегмента. Принимает slug (название) сегмента.
       parameters:
       - description: Segment data
         in: body
@@ -75,7 +84,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Создание сегмента
+      description: Метод создания сегмента. Принимает slug (название) сегмента.
       parameters:
       - description: Segment data
         in: body
@@ -103,11 +112,45 @@ paths:
       summary: Create segment
       tags:
       - segment
+  /segment/reports/{fileName}:
+    get:
+      description: Метод скачивания csv отчета по истории сегментов пользователя.
+      parameters:
+      - description: название файла в формате /reports/file_name.csv
+        in: path
+        name: fileName
+        required: true
+        type: string
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: OK
+          headers:
+            Content-Disposition:
+              description: attachment;filename=file_name
+              type: string
+            Content-Type:
+              description: text/csv
+              type: string
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Скачивание отчета
+      tags:
+      - segment
   /segment/user:
     get:
       consumes:
       - application/json
-      description: Получение всех сегментов для пользователя
+      description: Метод получения активных сегментов пользователя. Принимает на вход
+        id пользователя.
       parameters:
       - description: User data
         in: body
@@ -137,7 +180,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Добавление и удаление сегментов у пользователя
+      description: Метод добавления пользователя в сегмент. Принимает список slug
+        (названий) сегментов которые нужно добавить пользователю,
       parameters:
       - description: Segment data
         in: body
@@ -165,6 +209,39 @@ paths:
                 type: string
             type: object
       summary: Update user segments
+      tags:
+      - segment
+  /segment/user/history:
+    get:
+      consumes:
+      - application/json
+      description: 'Метод получения истории сегментов пользователя за указанный месяц
+        и год. На вход: год и месяц. На выходе ссылка на CSV файл.'
+      parameters:
+      - description: Segment data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/segment.HistoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            properties:
+              report:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Get user segments history
       tags:
       - segment
 swagger: "2.0"

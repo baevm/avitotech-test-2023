@@ -25,5 +25,9 @@ func (s *Server) setHTTPRouter() *chi.Mux {
 	r.Post("/segment/user", segmentHandler.UpdateUserSegments)
 	r.Get("/segment/user", segmentHandler.GetSegmentsForUser)
 
+	r.Get("/segment/user/history", segmentHandler.GetUserHistory)
+
+	r.Get("/segments/reports/{fileName}", segmentHandler.DownloadReport)
+
 	return r
 }

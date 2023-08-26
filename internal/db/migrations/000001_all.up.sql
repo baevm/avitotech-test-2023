@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS segments (
     slug varchar (255) PRIMARY KEY,
-    created_at timestamp NOT NULL DEFAULT now()
+    created_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS user_segments (
     segment_slug varchar (255) references segments(slug) NOT NULL,
     user_id bigint NOT NULL,
-    created_at timestamp NOT NULL DEFAULT now(),
+    created_at timestamptz NOT NULL DEFAULT now(),
 
     PRIMARY KEY (user_id, segment_slug)
 );
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS user_segment_history (
     segment_slug varchar (255) NOT NULL,
     user_id bigint NOT NULL,
     operation varchar(1) NOT NULL, -- I for insert, D for delete
-    executed_at timestamp without time zone NOT NULL DEFAULT now()
+    executed_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE OR REPLACE FUNCTION user_segments_trigger()

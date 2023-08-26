@@ -11,12 +11,12 @@ type GetSegmentsForUserRequest struct {
 }
 
 // GetSegmentsForUser godoc
-// @Summary      Get user segments
-// @Description  Получение всех сегментов для пользователя
+// @Summary      Получение сегментов пользователя
+// @Description Метод получения активных сегментов пользователя. Принимает на вход id пользователя.
 // @Tags         segment
 // @Accept       json
 // @Produce      json
-// @Param        body  body  GetSegmentsForUserRequest  true  "User data"
+// @Param        body  body  GetSegmentsForUserRequest  true  "Данные пользователя"
 // @Success      200  {object} []models.Segment
 // @Failure      400  {object} object{error=string}
 // @Router       /segment/user [get]

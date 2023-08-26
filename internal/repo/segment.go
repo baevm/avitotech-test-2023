@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -168,4 +169,50 @@ func (r Segment) DeleteUserSegments(ctx context.Context, userId int64, deleteSeg
 	ct, err := r.DB.Exec(ctx, query, args...)
 
 	return ct.RowsAffected(), err
+}
+
+func (r Segment) GetUserHistory(ctx context.Context, userId int64, date time.Time) ([]*models.UserHistory, error) {
+	query := `
+		SELECT user_id, segment_slug, operation, executed_at
+		FROM user_segment_history
+		WHERE user_id = $1
+		AND date_part('year', executed_at) = $2 
+		AND date_part('month', executed_at) = $3`
+
+	args := []any{
+		userId,
+		date.Year(),
+		date.Month(),
+	}
+
+	rows, err := r.DB.Query(ctx, query, args...)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var history []*models.UserHistory
+
+	for rows.Next() {
+		var userHistory models.UserHistory
+
+		err := rows.Scan(
+			&userHistory.UserID,
+			&userHistory.SegmentSlug,
+			&userHistory.Operation,
+			&userHistory.ExecutedAt,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		history = append(history, &userHistory)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return history, nil
 }

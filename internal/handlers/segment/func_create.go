@@ -12,12 +12,12 @@ type CreateRequest struct {
 }
 
 // Create godoc
-// @Summary      Create segment
-// @Description  Создание сегмента
+// @Summary      Создание сегмента
+// @Description  Метод создания сегмента. Принимает slug (название) сегмента.
 // @Tags         segment
 // @Accept       json
 // @Produce      json
-// @Param        body  body  CreateRequest  true  "Segment data"
+// @Param        body  body  CreateRequest  true  "Данные сегмента"
 // @Success      201  {object} object{created_at=string}
 // @Failure      400  {object} object{error=string}
 // @Router       /segment [post]

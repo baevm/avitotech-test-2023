@@ -15,7 +15,12 @@ type Config struct {
 var cfg Config
 
 func Load(path string) error {
-	readFromEnvFile(path)
+	viper.AddConfigPath(path)
+	viper.SetConfigFile(".env")
+
+	if err := viper.MergeInConfig(); err != nil {
+		log.Fatalf("Error reading env file, %s", err)
+	}
 
 	viper.AutomaticEnv()
 
@@ -29,13 +34,4 @@ func Load(path string) error {
 
 func Get() *Config {
 	return &cfg
-}
-
-func readFromEnvFile(path string) {
-	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
-
-	if err := viper.MergeInConfig(); err != nil {
-		log.Fatalf("Error reading env file, %s", err)
-	}
 }

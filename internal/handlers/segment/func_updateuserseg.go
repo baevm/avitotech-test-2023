@@ -13,12 +13,13 @@ type UpdateUserSegmentsRequest struct {
 }
 
 // UpdateUserSegments godoc
-// @Summary      Update user segments
-// @Description  Добавление и удаление сегментов у пользователя
+// @Summary      Добавление/удаление сегментов у пользователя
+// @Description  Метод добавления пользователя в сегмент. Принимает список slug (названий) сегментов которые нужно добавить пользователю,
+// список slug (названий) сегментов которые нужно удалить у пользователя, id пользователя.
 // @Tags         segment
 // @Accept       json
 // @Produce      json
-// @Param        body  body  UpdateUserSegmentsRequest  true  "Segment data"
+// @Param        body  body  UpdateUserSegmentsRequest  true  "Данные сегмента и пользователя"
 // @Success      200  {object} object{segments_added=int,segments_deleted=int}
 // @Failure      400  {object} object{error=string}
 // @Router       /segment/user [post]

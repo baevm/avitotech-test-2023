@@ -12,12 +12,12 @@ type DeleteRequest struct {
 }
 
 // Delete godoc
-// @Summary      Delete segment
-// @Description  Удаление сегмента
+// @Summary      Удаление сегмента
+// @Description  Метод удаления сегмента. Принимает slug (название) сегмента.
 // @Tags         segment
 // @Accept       json
 // @Produce      json
-// @Param        body  body  DeleteRequest  true  "Segment data"
+// @Param        body  body  DeleteRequest  true  "Данные сегмента"
 // @Success      200  {object} object{message=string}
 // @Failure      400  {object} object{error=string}
 // @Router       /segment [delete]
