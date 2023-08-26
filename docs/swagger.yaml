@@ -8,44 +8,41 @@ definitions:
   segment.CreateRequest:
     properties:
       slug:
+        example: AVITO_VOICE_MESSAGES
         type: string
     type: object
   segment.DeleteRequest:
     properties:
       slug:
+        example: AVITO_VOICE_MESSAGES
         type: string
-    type: object
-  segment.GetSegmentsForUserRequest:
-    properties:
-      user_id:
-        type: integer
-    type: object
-  segment.HistoryRequest:
-    properties:
-      month:
-        type: integer
-      user_id:
-        type: integer
-      year:
-        type: integer
     type: object
   segment.UpdateUserSegmentsRequest:
     properties:
       add_segments:
+        example:
+        - AVITO_VOICE_MESSAGES
+        - AVITO_DISCOUNT_50
         items:
           type: string
         type: array
       delete_segments:
+        example:
+        - AVITO_DISCOUNT_10
         items:
           type: string
         type: array
+      ttl:
+        example: 1000
+        type: integer
       user_id:
+        example: 1
         type: integer
     type: object
 host: localhost:8080
 info:
   contact: {}
-  description: Тествое задание для Avitotech 2023
+  description: Тествое задание для стажировки Avitotech 2023
   title: Avitotech Test 2023 API
   version: "1.0"
 paths:
@@ -55,7 +52,7 @@ paths:
       - application/json
       description: Метод удаления сегмента. Принимает slug (название) сегмента.
       parameters:
-      - description: Segment data
+      - description: Данные сегмента
         in: body
         name: body
         required: true
@@ -78,7 +75,7 @@ paths:
               error:
                 type: string
             type: object
-      summary: Delete segment
+      summary: Удаление сегмента
       tags:
       - segment
     post:
@@ -86,7 +83,7 @@ paths:
       - application/json
       description: Метод создания сегмента. Принимает slug (название) сегмента.
       parameters:
-      - description: Segment data
+      - description: Данные сегмента
         in: body
         name: body
         required: true
@@ -109,14 +106,56 @@ paths:
               error:
                 type: string
             type: object
-      summary: Create segment
+      summary: Создание сегмента
+      tags:
+      - segment
+  /segment/history/{userId}:
+    get:
+      description: 'Метод получения истории сегментов пользователя за указанный месяц
+        и год. На вход: год и месяц. На выходе ссылка на CSV файл.'
+      parameters:
+      - description: id пользователя
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: месяц
+        in: query
+        name: month
+        required: true
+        type: integer
+      - description: год
+        in: query
+        name: year
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              report:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Получение истории сегментов пользователя
       tags:
       - segment
   /segment/reports/{fileName}:
     get:
-      description: Метод скачивания csv отчета по истории сегментов пользователя.
+      description: |-
+        Метод скачивания csv отчета по истории сегментов пользователя.
+        Отчет в формате: идентификатор пользователя 1;сегмент1;операция (добавление = 'I' / удаление = "D");дата и время
       parameters:
-      - description: название файла в формате /reports/file_name.csv
+      - description: file_name.csv
         in: path
         name: fileName
         required: true
@@ -146,44 +185,14 @@ paths:
       tags:
       - segment
   /segment/user:
-    get:
-      consumes:
-      - application/json
-      description: Метод получения активных сегментов пользователя. Принимает на вход
-        id пользователя.
-      parameters:
-      - description: User data
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/segment.GetSegmentsForUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Segment'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            properties:
-              error:
-                type: string
-            type: object
-      summary: Get user segments
-      tags:
-      - segment
     post:
       consumes:
       - application/json
-      description: Метод добавления пользователя в сегмент. Принимает список slug
-        (названий) сегментов которые нужно добавить пользователю,
+      description: |-
+        Метод добавления пользователя в сегмент. Принимает массив slug (названий) сегментов которые нужно добавить пользователю,
+        массив slug (названий) сегментов которые нужно удалить у пользователя, id пользователя, ttl (в секундах).
       parameters:
-      - description: Segment data
+      - description: Данные сегмента и пользователя
         in: body
         name: body
         required: true
@@ -208,32 +217,28 @@ paths:
               error:
                 type: string
             type: object
-      summary: Update user segments
+      summary: Добавление/удаление сегментов у пользователя
       tags:
       - segment
-  /segment/user/history:
+  /segment/user/{userId}:
     get:
-      consumes:
-      - application/json
-      description: 'Метод получения истории сегментов пользователя за указанный месяц
-        и год. На вход: год и месяц. На выходе ссылка на CSV файл.'
+      description: Метод получения активных сегментов пользователя. Принимает на вход
+        id пользователя.
       parameters:
-      - description: Segment data
-        in: body
-        name: body
+      - description: id пользователя
+        in: path
+        name: userId
         required: true
-        schema:
-          $ref: '#/definitions/segment.HistoryRequest'
+        type: string
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
-            properties:
-              report:
-                type: string
-            type: object
+            items:
+              $ref: '#/definitions/models.Segment'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -241,7 +246,7 @@ paths:
               error:
                 type: string
             type: object
-      summary: Get user segments history
+      summary: Получение сегментов пользователя
       tags:
       - segment
 swagger: "2.0"

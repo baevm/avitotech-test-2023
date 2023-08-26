@@ -8,7 +8,7 @@ import (
 )
 
 type DeleteRequest struct {
-	Slug string `json:"slug"`
+	Slug string `json:"slug" example:"AVITO_VOICE_MESSAGES"`
 }
 
 // Delete godoc

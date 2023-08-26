@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type Data map[string]any
@@ -81,4 +84,24 @@ func ReadJSON(w http.ResponseWriter, r *http.Request, dst any) error {
 	}
 
 	return nil
+}
+
+func QueryInt(r *http.Request, key string) (int64, error) {
+	value := r.URL.Query().Get(key)
+
+	if value == "" {
+		return 0, errors.New("empty query param")
+	}
+
+	return strconv.ParseInt(value, 10, 64)
+}
+
+func ParamInt(r *http.Request, key string) (int64, error) {
+	paramStr := chi.URLParam(r, key)
+
+	if paramStr == "" {
+		return 0, errors.New("empty param")
+	}
+
+	return strconv.ParseInt(paramStr, 10, 64)
 }

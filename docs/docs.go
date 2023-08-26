@@ -28,10 +28,10 @@ const docTemplate = `{
                 "tags": [
                     "segment"
                 ],
-                "summary": "Create segment",
+                "summary": "Создание сегмента",
                 "parameters": [
                     {
-                        "description": "Segment data",
+                        "description": "Данные сегмента",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -76,10 +76,10 @@ const docTemplate = `{
                 "tags": [
                     "segment"
                 ],
-                "summary": "Delete segment",
+                "summary": "Удаление сегмента",
                 "parameters": [
                     {
-                        "description": "Segment data",
+                        "description": "Данные сегмента",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -114,9 +114,68 @@ const docTemplate = `{
                 }
             }
         },
+        "/segment/history/{userId}": {
+            "get": {
+                "description": "Метод получения истории сегментов пользователя за указанный месяц и год. На вход: год и месяц. На выходе ссылка на CSV файл.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "segment"
+                ],
+                "summary": "Получение истории сегментов пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id пользователя",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "месяц",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "год",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "report": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/segment/reports/{fileName}": {
             "get": {
-                "description": "Метод скачивания csv отчета по истории сегментов пользователя.",
+                "description": "Метод скачивания csv отчета по истории сегментов пользователя.\nОтчет в формате: идентификатор пользователя 1;сегмент1;операция (добавление = 'I' / удаление = \"D\");дата и время",
                 "produces": [
                     "text/csv"
                 ],
@@ -127,7 +186,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "название файла в формате /reports/file_name.csv",
+                        "description": "file_name.csv",
                         "name": "fileName",
                         "in": "path",
                         "required": true
@@ -165,54 +224,8 @@ const docTemplate = `{
             }
         },
         "/segment/user": {
-            "get": {
-                "description": "Метод получения активных сегментов пользователя. Принимает на вход id пользователя.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "segment"
-                ],
-                "summary": "Get user segments",
-                "parameters": [
-                    {
-                        "description": "User data",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/segment.GetSegmentsForUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Segment"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "error": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
             "post": {
-                "description": "Метод добавления пользователя в сегмент. Принимает список slug (названий) сегментов которые нужно добавить пользователю,",
+                "description": "Метод добавления пользователя в сегмент. Принимает массив slug (названий) сегментов которые нужно добавить пользователю,\nмассив slug (названий) сегментов которые нужно удалить у пользователя, id пользователя, ttl (в секундах).",
                 "consumes": [
                     "application/json"
                 ],
@@ -222,10 +235,10 @@ const docTemplate = `{
                 "tags": [
                     "segment"
                 ],
-                "summary": "Update user segments",
+                "summary": "Добавление/удаление сегментов у пользователя",
                 "parameters": [
                     {
-                        "description": "Segment data",
+                        "description": "Данные сегмента и пользователя",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -263,39 +276,32 @@ const docTemplate = `{
                 }
             }
         },
-        "/segment/user/history": {
+        "/segment/user/{userId}": {
             "get": {
-                "description": "Метод получения истории сегментов пользователя за указанный месяц и год. На вход: год и месяц. На выходе ссылка на CSV файл.",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Метод получения активных сегментов пользователя. Принимает на вход id пользователя.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "segment"
                 ],
-                "summary": "Get user segments history",
+                "summary": "Получение сегментов пользователя",
                 "parameters": [
                     {
-                        "description": "Segment data",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/segment.HistoryRequest"
-                        }
+                        "type": "string",
+                        "description": "id пользователя",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "report": {
-                                    "type": "string"
-                                }
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Segment"
                             }
                         }
                     },
@@ -327,7 +333,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "slug": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "AVITO_VOICE_MESSAGES"
                 }
             }
         },
@@ -335,29 +342,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "slug": {
-                    "type": "string"
-                }
-            }
-        },
-        "segment.GetSegmentsForUserRequest": {
-            "type": "object",
-            "properties": {
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "segment.HistoryRequest": {
-            "type": "object",
-            "properties": {
-                "month": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                },
-                "year": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "AVITO_VOICE_MESSAGES"
                 }
             }
         },
@@ -368,16 +354,28 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "AVITO_VOICE_MESSAGES",
+                        "AVITO_DISCOUNT_50"
+                    ]
                 },
                 "delete_segments": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "AVITO_DISCOUNT_10"
+                    ]
+                },
+                "ttl": {
+                    "type": "integer",
+                    "example": 1000
                 },
                 "user_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         }
@@ -391,7 +389,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Avitotech Test 2023 API",
-	Description:      "Тествое задание для Avitotech 2023",
+	Description:      "Тествое задание для стажировки Avitotech 2023",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

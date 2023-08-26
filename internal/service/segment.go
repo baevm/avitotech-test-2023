@@ -87,7 +87,9 @@ func (s *Segment) GetUserSegments(ctx context.Context, userId int64) ([]*models.
 	return s.segmentRepo.GetUserSegments(ctx, userId)
 }
 
-func (s *Segment) GetUserHistory(ctx context.Context, userId int64, date time.Time) (string, error) {
+func (s *Segment) GetUserHistory(ctx context.Context, userId, month, year int64) (string, error) {
+	date := time.Date(int(year), time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+
 	userHistory, err := s.segmentRepo.GetUserHistory(ctx, userId, date)
 
 	if err != nil {

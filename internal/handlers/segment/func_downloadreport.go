@@ -12,10 +12,10 @@ import (
 // DownloadReport godoc
 // @Summary      Скачивание отчета
 // @Description  Метод скачивания csv отчета по истории сегментов пользователя.
-// Отчет в формате: идентификатор пользователя 1;сегмент1;операция (добавление = 'I' / удаление = "D");дата и время
+// @Description  Отчет в формате: идентификатор пользователя 1;сегмент1;операция (добавление = 'I' / удаление = "D");дата и время
 // @Tags         segment
 // @Produce      text/csv
-// @Param        fileName path string true "название файла в формате /reports/file_name.csv"
+// @Param        fileName path string true "file_name.csv"
 // @Success      200  {file} file
 // @Failure      400  {object} object{error=string}
 // @Header	 	 200 {string} Content-Type "text/csv"
@@ -38,5 +38,6 @@ func (h *handler) DownloadReport(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", "attachment;filename="+fileName)
 
+	// TODO: добавить удаление файла после скачивания
 	http.ServeFile(w, r, fullPath)
 }

@@ -7,16 +7,16 @@ import (
 )
 
 type UpdateUserSegmentsRequest struct {
-	UserId         int64    `json:"user_id"`
-	AddSegments    []string `json:"add_segments"`
-	TTL            int64    `json:"ttl"`
-	DeleteSegments []string `json:"delete_segments"`
+	UserId         int64    `json:"user_id" example:"1"`
+	AddSegments    []string `json:"add_segments" example:"AVITO_VOICE_MESSAGES,AVITO_DISCOUNT_50"`
+	TTL            int64    `json:"ttl" example:"1000"`
+	DeleteSegments []string `json:"delete_segments" example:"AVITO_DISCOUNT_10"`
 }
 
 // UpdateUserSegments godoc
 // @Summary      Добавление/удаление сегментов у пользователя
 // @Description  Метод добавления пользователя в сегмент. Принимает массив slug (названий) сегментов которые нужно добавить пользователю,
-// массив slug (названий) сегментов которые нужно удалить у пользователя, id пользователя, ttl (в секундах).
+// @Description  массив slug (названий) сегментов которые нужно удалить у пользователя, id пользователя, ttl (в секундах).
 // @Tags         segment
 // @Accept       json
 // @Produce      json
