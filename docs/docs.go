@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/segment": {
             "post": {
-                "description": "Метод создания сегмента. Принимает slug (название) сегмента.",
+                "description": "Метод создания сегмента. Принимает slug (название) сегмента.\nЕсли указан user_percent, то сегмент будет добавлен проценту от общего числа случайным пользователям.",
                 "consumes": [
                     "application/json"
                 ],
@@ -31,7 +31,7 @@ const docTemplate = `{
                 "summary": "Создание сегмента",
                 "parameters": [
                     {
-                        "description": "Данные сегмента",
+                        "description": "Запрос на создание",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -326,6 +326,9 @@ const docTemplate = `{
             "properties": {
                 "slug": {
                     "type": "string"
+                },
+                "user_percent": {
+                    "type": "integer"
                 }
             }
         },
@@ -335,6 +338,10 @@ const docTemplate = `{
                 "slug": {
                     "type": "string",
                     "example": "AVITO_VOICE_MESSAGES"
+                },
+                "user_percent": {
+                    "type": "integer",
+                    "example": 50
                 }
             }
         },

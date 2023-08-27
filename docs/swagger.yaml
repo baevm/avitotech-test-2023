@@ -4,12 +4,17 @@ definitions:
     properties:
       slug:
         type: string
+      user_percent:
+        type: integer
     type: object
   segment.CreateRequest:
     properties:
       slug:
         example: AVITO_VOICE_MESSAGES
         type: string
+      user_percent:
+        example: 50
+        type: integer
     type: object
   segment.DeleteRequest:
     properties:
@@ -81,9 +86,11 @@ paths:
     post:
       consumes:
       - application/json
-      description: Метод создания сегмента. Принимает slug (название) сегмента.
+      description: |-
+        Метод создания сегмента. Принимает slug (название) сегмента.
+        Если указан user_percent, то сегмент будет добавлен проценту от общего числа случайным пользователям.
       parameters:
-      - description: Данные сегмента
+      - description: Запрос на создание
         in: body
         name: body
         required: true
