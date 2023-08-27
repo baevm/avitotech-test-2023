@@ -17,7 +17,7 @@ type UpdateUserSegmentsRequest struct {
 // @Summary      Добавление/удаление сегментов у пользователя
 // @Description  Метод добавления пользователя в сегмент. Принимает массив slug (названий) сегментов которые нужно добавить пользователю,
 // @Description  массив slug (названий) сегментов которые нужно удалить у пользователя, id пользователя, ttl (в секундах).
-// @Tags         segment
+// @Tags         Segment
 // @Accept       json
 // @Produce      json
 // @Param        body  body  UpdateUserSegmentsRequest  true  "Данные сегмента и пользователя"
@@ -32,7 +32,7 @@ func (h *handler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	segmentsAdded, segmentsDeleted, err := h.segment.UpdateUserSegments(
+	segmentsAdded, segmentsDeleted, err := h.segmentSvc.UpdateUserSegments(
 		r.Context(),
 		req.UserId,
 		req.AddSegments,

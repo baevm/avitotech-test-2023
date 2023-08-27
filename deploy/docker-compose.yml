@@ -1,40 +1,46 @@
 version: "3.7"
 
 services:
-  postgres:
+  db:
     container_name: segments-postgres
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: segments-db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - 5432:5432
     networks:
-      - postgres
+      - local
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api:
     container_name: segments-service
     build:
       context: ../
       dockerfile: ./deploy/Dockerfile
-    environment:
-      - DB_DSN="postgres://postgres:123456@localhost/segments-db?sslmode=disable"
     ports:
-      - 5000:5000
+      - ${API_PORT}:${API_PORT}
     networks:
-      - postgres
+      - local
     depends_on:
-      - postgres
+      db:
+        condition: service_healthy
 
-  redis:
+  queue:
     container_name: segments-redis-queue
     image: redis:latest
     ports:
       - 6379:6379
+    networks:
+      - local
     restart: unless-stopped
   
 networks:
-  postgres:
+  local:
     driver: bridge

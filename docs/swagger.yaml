@@ -256,4 +256,29 @@ paths:
       summary: Получение сегментов пользователя
       tags:
       - segment
+  /user:
+    post:
+      description: |-
+        Метод создания пользователя.
+        Используется в случае необходимости вручную добавить пользователя, так как при добавлении сегмента пользователь сохраняется автоматически.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            properties:
+              user_id:
+                type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      summary: Создание пользователя
+      tags:
+      - user
 swagger: "2.0"

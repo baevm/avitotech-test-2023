@@ -14,7 +14,7 @@ type DeleteRequest struct {
 // Delete godoc
 // @Summary      Удаление сегмента
 // @Description  Метод удаления сегмента. Принимает slug (название) сегмента.
-// @Tags         segment
+// @Tags         Segment
 // @Accept       json
 // @Produce      json
 // @Param        body  body  DeleteRequest  true  "Данные сегмента"
@@ -33,7 +33,7 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 		Slug: req.Slug,
 	}
 
-	if err := h.segment.DeleteBySlug(r.Context(), segment); err != nil {
+	if err := h.segmentSvc.DeleteBySlug(r.Context(), segment); err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
 		return
 	}

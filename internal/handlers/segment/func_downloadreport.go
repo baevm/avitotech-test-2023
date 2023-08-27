@@ -13,7 +13,7 @@ import (
 // @Summary      Скачивание отчета
 // @Description  Метод скачивания csv отчета по истории сегментов пользователя.
 // @Description  Отчет в формате: идентификатор пользователя 1;сегмент1;операция (добавление = 'I' / удаление = "D");дата и время
-// @Tags         segment
+// @Tags         Segment
 // @Produce      text/csv
 // @Param        fileName path string true "file_name.csv"
 // @Success      200  {file} file

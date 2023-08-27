@@ -16,7 +16,7 @@ type CreateRequest struct {
 // @Summary      Создание сегмента
 // @Description  Метод создания сегмента. Принимает slug (название) сегмента.
 // @Description  Если указан user_percent, то сегмент будет добавлен проценту от общего числа случайным пользователям.
-// @Tags         segment
+// @Tags         Segment
 // @Accept       json
 // @Produce      json
 // @Param        body  body  CreateRequest  true  "Запрос на создание"
@@ -36,7 +36,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		UserPercent: req.UserPercent,
 	}
 
-	if err := h.segment.Create(r.Context(), segment); err != nil {
+	if err := h.segmentSvc.Create(r.Context(), segment); err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
 		return
 	}

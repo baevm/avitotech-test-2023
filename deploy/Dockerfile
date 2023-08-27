@@ -23,15 +23,15 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
 
-# COPY --from=builder /app/migrate ./migrate
+COPY --from=builder /app/migrate ./migrate
 COPY --from=builder /app/cfg ./cfg
-COPY --from=builder /app/.env . 
 COPY --from=builder /app/deploy/start.sh .
-# COPY --from=builder /app/internal/db/migrations ./migrations
+COPY --from=builder /app/.env . 
+COPY --from=builder /app/internal/db/migrations ./migrations
 
 COPY --from=builder /app/bin/api .
 
-EXPOSE 5000
+EXPOSE 8080
 
 CMD ["./api"]
 ENTRYPOINT ["./start.sh"]

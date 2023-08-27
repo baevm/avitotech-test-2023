@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/dezzerlol/avitotech-test-2023/internal/handlers/segment"
+	"github.com/dezzerlol/avitotech-test-2023/internal/handlers/user"
 	"github.com/dezzerlol/avitotech-test-2023/internal/repo"
 	"github.com/dezzerlol/avitotech-test-2023/internal/service"
 
@@ -22,10 +23,16 @@ func (s *Server) setHTTPRouter() *chi.Mux {
 	))
 
 	segmentRepo := repo.NewSegment(s.db)
+	userRepo := repo.NewUser(s.db)
 
-	segmentService := service.NewSegment(segmentRepo, s.worker)
+	segmentService := service.NewSegment(s.worker, segmentRepo, userRepo)
+	userService := service.NewUser(userRepo)
 
-	segmentHandler := segment.New(segmentService, s.logger)
+	segmentHandler := segment.New(s.logger, segmentService)
+	userHandler := user.New(s.logger, userService)
+
+	// Создание пользователя
+	r.Post("/user", userHandler.Create)
 
 	// Создание сегмента
 	r.Post("/segment", segmentHandler.Create)

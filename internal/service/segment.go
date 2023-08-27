@@ -15,9 +15,6 @@ type SegmentRepo interface {
 	Create(ctx context.Context, segment *models.Segment) error
 	DeleteBySlug(ctx context.Context, segment *models.Segment) error
 
-	CreateUser(ctx context.Context) (int64, error)
-	CheckUserExist(ctx context.Context, userId int64) (bool, error)
-
 	AddUserSegments(ctx context.Context, userId int64, addSegments []string, ttl int64) (int64, error)
 	AddRndUsersSegment(ctx context.Context, slug string, percent int8) error
 	DeleteUserSegments(ctx context.Context, userId int64, deleteSegments []string) (int64, error)
@@ -26,14 +23,21 @@ type SegmentRepo interface {
 	GetUserHistory(ctx context.Context, userId int64, date time.Time) ([]*models.UserHistory, error)
 }
 
+type UserRepo interface {
+	CreateUser(ctx context.Context) (int64, error)
+	CheckUserExist(ctx context.Context, userId int64) (bool, error)
+}
+
 type Segment struct {
 	segmentRepo SegmentRepo
+	userRepo    UserRepo
 	worker      worker.TaskDistributor
 }
 
-func NewSegment(segmentRepo SegmentRepo, worker worker.TaskDistributor) *Segment {
+func NewSegment(worker worker.TaskDistributor, segmentRepo SegmentRepo, userRepo UserRepo) *Segment {
 	return &Segment{
 		segmentRepo: segmentRepo,
+		userRepo:    userRepo,
 		worker:      worker,
 	}
 }
@@ -69,14 +73,14 @@ func (s *Segment) UpdateUserSegments(
 ) {
 	// Проверяем, существует ли пользователь
 	// Если нет, то создаем новую запись в таблице users
-	isExists, err := s.segmentRepo.CheckUserExist(ctx, userId)
+	isExists, err := s.userRepo.CheckUserExist(ctx, userId)
 
 	if err != nil {
 		return segmentsAdded, segmentsDeleted, err
 	}
 
 	if !isExists {
-		userId, err = s.segmentRepo.CreateUser(ctx)
+		userId, err = s.userRepo.CreateUser(ctx)
 
 		if err != nil {
 			return segmentsAdded, segmentsDeleted, err

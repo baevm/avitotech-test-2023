@@ -10,7 +10,7 @@ import (
 // GetUserHistory godoc
 // @Summary      Получение истории сегментов пользователя
 // @Description  Метод получения истории сегментов пользователя за указанный месяц и год. На вход: год и месяц. На выходе ссылка на CSV файл.
-// @Tags         segment
+// @Tags         Segment
 // @Produce      json
 // @Param        userId path string true "id пользователя"
 // @Param        month query int true "месяц"
@@ -37,7 +37,7 @@ func (h *handler) GetUserHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filePath, err := h.segment.GetUserHistory(r.Context(), userId, month, year)
+	filePath, err := h.segmentSvc.GetUserHistory(r.Context(), userId, month, year)
 
 	if err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
@@ -45,7 +45,7 @@ func (h *handler) GetUserHistory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Ссылка для скачивания файла в формате addr:port/segments/reports/file_name.csv
-	addr := fmt.Sprintf("%s:%s", h.config.HTTP_HOST, h.config.HTTP_PORT)
+	addr := fmt.Sprintf("%s:%s", h.config.API_HOST, h.config.API_PORT)
 	downloadLink := addr + "/segment" + filePath
 
 	payload.WriteJSON(w, http.StatusOK, payload.Data{"report": downloadLink}, nil)

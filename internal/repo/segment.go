@@ -58,41 +58,6 @@ func (r Segment) DeleteBySlug(ctx context.Context, segment *models.Segment) erro
 	return err
 }
 
-func (r Segment) CreateUser(ctx context.Context) (int64, error) {
-	query := `
-		INSERT INTO users DEFAULT VALUES
-		RETURNING id
-	`
-
-	var userId int64
-
-	err := r.DB.
-		QueryRow(ctx, query).
-		Scan(&userId)
-
-	return userId, err
-}
-
-func (r Segment) CheckUserExist(ctx context.Context, userId int64) (bool, error) {
-	query := `
-		SELECT EXISTS(
-			SELECT 1
-			FROM users
-			WHERE id = $1
-		)
-	`
-
-	args := []any{userId}
-
-	var exists bool
-
-	err := r.DB.
-		QueryRow(ctx, query, args...).
-		Scan(&exists)
-
-	return exists, err
-}
-
 func (r Segment) GetUserSegments(ctx context.Context, userId int64) ([]*models.Segment, error) {
 	query := `
 		SELECT slug

@@ -20,15 +20,15 @@ type Handler interface {
 }
 
 type handler struct {
-	logger  *zap.SugaredLogger
-	segment *service.Segment
-	config  *cfg.Config
+	logger     *zap.SugaredLogger
+	segmentSvc *service.Segment
+	config     *cfg.Config
 }
 
-func New(segment *service.Segment, logger *zap.SugaredLogger) Handler {
+func New(logger *zap.SugaredLogger, segment *service.Segment) Handler {
 	return &handler{
-		logger:  logger,
-		segment: segment,
-		config:  cfg.Get(),
+		logger:     logger,
+		segmentSvc: segment,
+		config:     cfg.Get(),
 	}
 }

@@ -49,5 +49,5 @@ func main() {
 	}()
 
 	server := http.New(logger, db, distributor)
-	server.Run(cfg.Get().HTTP_HOST, cfg.Get().HTTP_PORT)
+	server.Run(cfg.Get().API_HOST, cfg.Get().API_PORT)
 }

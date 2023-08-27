@@ -9,7 +9,7 @@ import (
 // GetSegmentsForUser godoc
 // @Summary      Получение сегментов пользователя
 // @Description Метод получения активных сегментов пользователя. Принимает на вход id пользователя.
-// @Tags         segment
+// @Tags         Segment
 // @Produce      json
 // @Param        userId path string true "id пользователя"
 // @Success      200  {object} []models.Segment
@@ -22,7 +22,7 @@ func (h *handler) GetSegmentsForUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	segments, err := h.segment.GetUserSegments(r.Context(), userId)
+	segments, err := h.segmentSvc.GetUserSegments(r.Context(), userId)
 
 	if err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
