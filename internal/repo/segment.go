@@ -58,6 +58,41 @@ func (r Segment) DeleteBySlug(ctx context.Context, segment *models.Segment) erro
 	return err
 }
 
+func (r Segment) CreateUser(ctx context.Context) (int64, error) {
+	query := `
+		INSERT INTO users DEFAULT VALUES
+		RETURNING id
+	`
+
+	var userId int64
+
+	err := r.DB.
+		QueryRow(ctx, query).
+		Scan(&userId)
+
+	return userId, err
+}
+
+func (r Segment) CheckUserExist(ctx context.Context, userId int64) (bool, error) {
+	query := `
+		SELECT EXISTS(
+			SELECT 1
+			FROM users
+			WHERE id = $1
+		)
+	`
+
+	args := []any{userId}
+
+	var exists bool
+
+	err := r.DB.
+		QueryRow(ctx, query, args...).
+		Scan(&exists)
+
+	return exists, err
+}
+
 func (r Segment) GetUserSegments(ctx context.Context, userId int64) ([]*models.Segment, error) {
 	query := `
 		SELECT slug
@@ -132,6 +167,26 @@ func (r Segment) AddUserSegments(ctx context.Context, userId int64, addSegments 
 	ct, err := r.DB.Exec(ctx, query, args...)
 
 	return ct.RowsAffected(), err
+}
+
+func (r Segment) AddRndUsersSegment(ctx context.Context, slug string, percent int8) error {
+	// Ищем процент рандомных пользователей
+	// И создаем записи в user_segments
+	// В случае если запись уже существует пропускаем
+	query := `
+	INSERT INTO user_segments (segment_slug, user_id)
+	SELECT s.slug, u.id 
+	FROM users u
+	JOIN segments s ON s.slug = $1
+	ORDER BY random() 
+	LIMIT (SELECT count(1) FROM users) * ($2/100.0)
+	ON CONFLICT DO NOTHING`
+
+	args := []any{slug, percent}
+
+	_, err := r.DB.Exec(ctx, query, args...)
+
+	return err
 }
 
 func (r Segment) DeleteUserSegments(ctx context.Context, userId int64, deleteSegments []string) (int64, error) {

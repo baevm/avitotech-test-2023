@@ -15,7 +15,11 @@ type SegmentRepo interface {
 	Create(ctx context.Context, segment *models.Segment) error
 	DeleteBySlug(ctx context.Context, segment *models.Segment) error
 
+	CreateUser(ctx context.Context) (int64, error)
+	CheckUserExist(ctx context.Context, userId int64) (bool, error)
+
 	AddUserSegments(ctx context.Context, userId int64, addSegments []string, ttl int64) (int64, error)
+	AddRndUsersSegment(ctx context.Context, slug string, percent int8) error
 	DeleteUserSegments(ctx context.Context, userId int64, deleteSegments []string) (int64, error)
 	GetUserSegments(ctx context.Context, userId int64) ([]*models.Segment, error)
 
@@ -35,7 +39,17 @@ func NewSegment(segmentRepo SegmentRepo, worker worker.TaskDistributor) *Segment
 }
 
 func (s *Segment) Create(ctx context.Context, segment *models.Segment) error {
-	return s.segmentRepo.Create(ctx, segment)
+	err := s.segmentRepo.Create(ctx, segment)
+
+	if err != nil {
+		return err
+	}
+
+	if segment.UserPercent > 0 {
+		err = s.segmentRepo.AddRndUsersSegment(ctx, segment.Slug, segment.UserPercent)
+	}
+
+	return err
 }
 
 func (s *Segment) DeleteBySlug(ctx context.Context, segment *models.Segment) error {
@@ -53,6 +67,23 @@ func (s *Segment) UpdateUserSegments(
 	segmentsDeleted int64,
 	err error,
 ) {
+	// Проверяем, существует ли пользователь
+	// Если нет, то создаем новую запись в таблице users
+	isExists, err := s.segmentRepo.CheckUserExist(ctx, userId)
+
+	if err != nil {
+		return segmentsAdded, segmentsDeleted, err
+	}
+
+	if !isExists {
+		userId, err = s.segmentRepo.CreateUser(ctx)
+
+		if err != nil {
+			return segmentsAdded, segmentsDeleted, err
+		}
+	}
+
+	// Если заданы сегменты на добавление, то добавляем их
 	if len(addSegments) > 0 {
 		segmentsAdded, err = s.segmentRepo.AddUserSegments(ctx, userId, addSegments, ttl)
 		if err != nil {
@@ -73,6 +104,7 @@ func (s *Segment) UpdateUserSegments(
 		}
 	}
 
+	// Если заданы сегменты на удаление, то удаляем их
 	if len(deleteSegments) > 0 {
 		segmentsDeleted, err = s.segmentRepo.DeleteUserSegments(ctx, userId, deleteSegments)
 		if err != nil {

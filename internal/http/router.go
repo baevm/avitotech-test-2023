@@ -27,13 +27,18 @@ func (s *Server) setHTTPRouter() *chi.Mux {
 
 	segmentHandler := segment.New(segmentService, s.logger)
 
+	// Создание сегмента
 	r.Post("/segment", segmentHandler.Create)
+	// Удаление сегмента
 	r.Delete("/segment", segmentHandler.Delete)
 
+	// Добавление/удаление сегментов у пользователя
 	r.Post("/segment/user", segmentHandler.UpdateUserSegments)
+	// Получение всех сегментов пользователя
 	r.Get("/segment/user/{userId}", segmentHandler.GetSegmentsForUser)
+	// Получение ссылки на отчет по сегментам пользователя
 	r.Get("/segment/history/{userId}", segmentHandler.GetUserHistory)
-
+	// Скачивание отчета пользователя по сегментам
 	r.Get("/segment/reports/{fileName}", segmentHandler.DownloadReport)
 
 	return r

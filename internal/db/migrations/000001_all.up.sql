@@ -1,11 +1,16 @@
 CREATE TABLE IF NOT EXISTS segments (
     slug varchar (255) PRIMARY KEY,
+    user_percent int,
     created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id bigserial PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS user_segments (
     segment_slug varchar (255) references segments(slug) NOT NULL,
-    user_id bigint NOT NULL,
+    user_id bigserial NOT NULL references users(id),
     created_at timestamptz NOT NULL DEFAULT now(),
     expire_at timestamptz,
 
@@ -15,7 +20,7 @@ CREATE TABLE IF NOT EXISTS user_segments (
 CREATE TABLE IF NOT EXISTS user_segment_history (
     id bigserial PRIMARY KEY,
     segment_slug varchar (255) NOT NULL,
-    user_id bigint NOT NULL,
+    user_id bigserial NOT NULL,
     operation varchar(1) NOT NULL, -- I for insert, D for delete
     executed_at timestamptz NOT NULL DEFAULT now()
 );

@@ -8,16 +8,18 @@ import (
 )
 
 type CreateRequest struct {
-	Slug string `json:"slug" example:"AVITO_VOICE_MESSAGES"`
+	Slug        string `json:"slug" example:"AVITO_VOICE_MESSAGES"`
+	UserPercent int8   `json:"user_percent" example:"50"`
 }
 
 // Create godoc
 // @Summary      Создание сегмента
 // @Description  Метод создания сегмента. Принимает slug (название) сегмента.
+// @Description  Если указан user_percent, то сегмент будет добавлен проценту от общего числа случайным пользователям.
 // @Tags         segment
 // @Accept       json
 // @Produce      json
-// @Param        body  body  CreateRequest  true  "Данные сегмента"
+// @Param        body  body  CreateRequest  true  "Запрос на создание"
 // @Success      201  {object} object{created_at=string}
 // @Failure      400  {object} object{error=string}
 // @Router       /segment [post]
@@ -30,7 +32,8 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	segment := &models.Segment{
-		Slug: req.Slug,
+		Slug:        req.Slug,
+		UserPercent: req.UserPercent,
 	}
 
 	if err := h.segment.Create(r.Context(), segment); err != nil {
