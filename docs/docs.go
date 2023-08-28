@@ -26,7 +26,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Создание сегмента",
                 "parameters": [
@@ -74,7 +74,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Удаление сегмента",
                 "parameters": [
@@ -121,7 +121,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Получение истории сегментов пользователя",
                 "parameters": [
@@ -180,7 +180,7 @@ const docTemplate = `{
                     "text/csv"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Скачивание отчета",
                 "parameters": [
@@ -233,7 +233,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Добавление/удаление сегментов у пользователя",
                 "parameters": [
@@ -283,7 +283,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Получение сегментов пользователя",
                 "parameters": [
@@ -326,7 +326,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User"
                 ],
                 "summary": "Создание пользователя",
                 "responses": {

@@ -23,5 +23,4 @@
 go.work
 tmp
 
-/reports/*
 /bin/*

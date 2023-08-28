@@ -28,8 +28,9 @@ COPY --from=builder /app/cfg ./cfg
 COPY --from=builder /app/deploy/start.sh .
 COPY --from=builder /app/.env . 
 COPY --from=builder /app/internal/db/migrations ./migrations
-
 COPY --from=builder /app/bin/api .
+COPY --from=builder /app/reports ./reports
+
 
 EXPOSE 8080
 

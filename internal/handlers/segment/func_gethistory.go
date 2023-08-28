@@ -45,7 +45,7 @@ func (h *handler) GetUserHistory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Ссылка для скачивания файла в формате addr:port/segments/reports/file_name.csv
-	addr := fmt.Sprintf("%s:%s", h.config.API_HOST, h.config.API_PORT)
+	addr := fmt.Sprintf("%s:%s", h.config.REPORTS_HOST, h.config.API_PORT)
 	downloadLink := addr + "/segment" + filePath
 
 	payload.WriteJSON(w, http.StatusOK, payload.Data{"report": downloadLink}, nil)

@@ -9,8 +9,9 @@ import (
 type Config struct {
 	DB_DSN string `mapstructure:"DB_DSN"`
 
-	API_HOST string `mapstructure:"API_HOST"`
-	API_PORT string `mapstructure:"API_PORT"`
+	API_HOST     string `mapstructure:"API_HOST"`
+	API_PORT     string `mapstructure:"API_PORT"`
+	REPORTS_HOST string `mapstructure:"REPORTS_HOST"`
 
 	REDIS_HOST string `mapstructure:"REDIS_HOST"`
 	REDIS_PORT string `mapstructure:"REDIS_PORT"`

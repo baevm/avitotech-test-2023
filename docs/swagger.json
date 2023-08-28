@@ -19,7 +19,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Создание сегмента",
                 "parameters": [
@@ -67,7 +67,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Удаление сегмента",
                 "parameters": [
@@ -114,7 +114,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Получение истории сегментов пользователя",
                 "parameters": [
@@ -173,7 +173,7 @@
                     "text/csv"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Скачивание отчета",
                 "parameters": [
@@ -226,7 +226,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Добавление/удаление сегментов у пользователя",
                 "parameters": [
@@ -276,7 +276,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "segment"
+                    "Segment"
                 ],
                 "summary": "Получение сегментов пользователя",
                 "parameters": [
@@ -319,7 +319,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User"
                 ],
                 "summary": "Создание пользователя",
                 "responses": {
