@@ -10,9 +10,15 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
 )
 
 type Data map[string]any
+
+type ValidationError struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
+}
 
 func WriteJSON(w http.ResponseWriter, status int, data Data, headers http.Header) error {
 	res, err := json.Marshal(data)
@@ -77,13 +83,37 @@ func ReadJSON(w http.ResponseWriter, r *http.Request, dst any) error {
 		}
 	}
 
-	err = decoder.Decode(&struct{}{})
+	return nil
+}
 
-	if err != io.EOF {
-		return errors.New("body must only contain a single JSON value")
+func Validate(dst any) []ValidationError {
+	validate := validator.New()
+
+	if err := validate.Struct(dst); err != nil {
+		ve := err.(validator.ValidationErrors)
+		out := make([]ValidationError, len(ve))
+
+		for i, v := range ve {
+			out[i] = ValidationError{Field: v.Field(), Message: msgForTag(v)}
+		}
+
+		return out
 	}
 
 	return nil
+}
+
+func msgForTag(fe validator.FieldError) string {
+	switch fe.Tag() {
+	case "required":
+		return "This field is required"
+	case "min":
+		return fmt.Sprintf("This field must be at least %s", fe.Param())
+	case "max":
+		return fmt.Sprintf("This field must be at most %s", fe.Param())
+	}
+
+	return fe.Error()
 }
 
 func QueryInt(r *http.Request, key string) (int64, error) {

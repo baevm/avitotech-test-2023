@@ -8,7 +8,7 @@ import (
 )
 
 type DeleteRequest struct {
-	Slug string `json:"slug" example:"AVITO_VOICE_MESSAGES"`
+	Slug string `json:"slug" validate:"required,min=3" example:"AVITO_VOICE_MESSAGES"`
 }
 
 // Delete godoc
@@ -26,6 +26,11 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	if err := payload.ReadJSON(w, r, &req); err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+		return
+	}
+
+	if errs := payload.Validate(req); errs != nil {
+		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": errs}, nil)
 		return
 	}
 

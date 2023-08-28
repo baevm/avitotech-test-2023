@@ -8,8 +8,8 @@ import (
 )
 
 type CreateRequest struct {
-	Slug        string `json:"slug" example:"AVITO_VOICE_MESSAGES"`
-	UserPercent int8   `json:"user_percent" example:"50"`
+	Slug        string `json:"slug" validate:"required,min=3" example:"AVITO_VOICE_MESSAGES"`
+	UserPercent int8   `json:"user_percent" validate:"omitempty,min=1,max=100" example:"50"`
 }
 
 // Create godoc
@@ -28,6 +28,11 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	if err := payload.ReadJSON(w, r, &req); err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+		return
+	}
+
+	if errs := payload.Validate(req); errs != nil {
+		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": errs}, nil)
 		return
 	}
 

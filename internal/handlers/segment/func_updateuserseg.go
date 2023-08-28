@@ -7,10 +7,10 @@ import (
 )
 
 type UpdateUserSegmentsRequest struct {
-	UserId         int64    `json:"user_id" example:"1"`
-	AddSegments    []string `json:"add_segments" example:"AVITO_VOICE_MESSAGES,AVITO_DISCOUNT_50"`
-	TTL            int64    `json:"ttl" example:"1000"`
-	DeleteSegments []string `json:"delete_segments" example:"AVITO_DISCOUNT_10"`
+	UserId         int64    `json:"user_id" validate:"required,min=1" example:"1"`
+	AddSegments    []string `json:"add_segments" validate:"dive,min=3" example:"AVITO_VOICE_MESSAGES,AVITO_DISCOUNT_50"`
+	TTL            int64    `json:"ttl" validate:"omitempty,min=1" example:"1000"`
+	DeleteSegments []string `json:"delete_segments" validate:"dive,min=3" example:"AVITO_DISCOUNT_10"`
 }
 
 // UpdateUserSegments godoc
@@ -29,6 +29,11 @@ func (h *handler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 
 	if err := payload.ReadJSON(w, r, &req); err != nil {
 		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+		return
+	}
+
+	if errs := payload.Validate(req); errs != nil {
+		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": errs}, nil)
 		return
 	}
 
