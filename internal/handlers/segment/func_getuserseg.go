@@ -25,7 +25,7 @@ func (h *handler) GetSegmentsForUser(w http.ResponseWriter, r *http.Request) {
 	segments, err := h.segmentSvc.GetUserSegments(r.Context(), userId)
 
 	if err != nil {
-		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+		payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)
 		return
 	}
 

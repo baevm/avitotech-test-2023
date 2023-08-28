@@ -1,9 +1,11 @@
 package segment
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
+	"github.com/dezzerlol/avitotech-test-2023/internal/repo"
 	"github.com/dezzerlol/avitotech-test-2023/pkg/payload"
 )
 
@@ -41,9 +43,17 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		UserPercent: req.UserPercent,
 	}
 
-	if err := h.segmentSvc.Create(r.Context(), segment); err != nil {
-		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
-		return
+	err := h.segmentSvc.Create(r.Context(), segment)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, repo.ErrSegmentAlreadyExists):
+			payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+			return
+		default:
+			payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)
+			return
+		}
 	}
 
 	payload.WriteJSON(w, http.StatusCreated, payload.Data{"created_at": segment.CreatedAt}, nil)

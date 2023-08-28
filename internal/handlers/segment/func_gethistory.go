@@ -40,7 +40,7 @@ func (h *handler) GetUserHistory(w http.ResponseWriter, r *http.Request) {
 	filePath, err := h.segmentSvc.GetUserHistory(r.Context(), userId, month, year)
 
 	if err != nil {
-		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+		payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)
 		return
 	}
 

@@ -46,7 +46,7 @@ func (h *handler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
-		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+		payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)
 		return
 	}
 

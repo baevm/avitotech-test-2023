@@ -19,7 +19,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	userId, err := h.userSvc.Create(r.Context())
 
 	if err != nil {
-		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
+		payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)
 		return
 	}
 

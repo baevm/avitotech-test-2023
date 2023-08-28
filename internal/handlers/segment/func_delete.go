@@ -1,9 +1,11 @@
 package segment
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
+	"github.com/dezzerlol/avitotech-test-2023/internal/repo"
 	"github.com/dezzerlol/avitotech-test-2023/pkg/payload"
 )
 
@@ -38,9 +40,17 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 		Slug: req.Slug,
 	}
 
-	if err := h.segmentSvc.DeleteBySlug(r.Context(), segment); err != nil {
-		payload.WriteJSON(w, http.StatusBadRequest, payload.Data{"error": err.Error()}, nil)
-		return
+	err := h.segmentSvc.DeleteBySlug(r.Context(), segment)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, repo.ErrSegmentNotFound):
+			payload.WriteJSON(w, http.StatusNotFound, payload.Data{"error": err.Error()}, nil)
+			return
+		default:
+			payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)
+			return
+		}
 	}
 
 	payload.WriteJSON(w, http.StatusOK, payload.Data{"message": "ok"}, nil)

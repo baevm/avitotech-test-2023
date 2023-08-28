@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -18,10 +19,6 @@ type Segment struct {
 func NewSegment(db *pgxpool.Pool) *Segment {
 	return &Segment{DB: db}
 }
-
-var (
-	ErrSegmentNotFound = errors.New("segment not found")
-)
 
 func (r Segment) Create(ctx context.Context, segment *models.Segment) error {
 	query := `
@@ -37,6 +34,16 @@ func (r Segment) Create(ctx context.Context, segment *models.Segment) error {
 	err := r.DB.
 		QueryRow(ctx, query, args...).
 		Scan(&segment.CreatedAt)
+
+	if err != nil {
+		var pgErr *pgconn.PgError
+
+		if ok := errors.As(err, &pgErr); ok {
+			if pgErr.Code == UniqueConstraintViolation {
+				return ErrSegmentAlreadyExists
+			}
+		}
+	}
 
 	return err
 }
