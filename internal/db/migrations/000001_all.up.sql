@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS user_segments (
-    segment_slug varchar (255) references segments(slug) NOT NULL,
-    user_id bigserial NOT NULL references users(id),
+    segment_slug varchar (255) references segments(slug) ON DELETE CASCADE,
+    user_id bigserial NOT NULL references users(id) ON DELETE CASCADE,
     created_at timestamptz NOT NULL DEFAULT now(),
     expire_at timestamptz,
 
