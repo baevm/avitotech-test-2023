@@ -139,7 +139,7 @@ curl --request GET 'http://localhost:8080/segment/reports/1-1693218476.csv'
 1,AVITO_DISCOUNT_50,I,2023-08-28 10:27:46
 1,AVITO_DISCOUNT_30,I,2023-08-28 10:27:49
 ```
-Пример отчета: [файл](/reports/1-1693218476.csv)
+Пример отчета: [файл](/reports/1-1693224806.csv)
 
 
 # FAQ

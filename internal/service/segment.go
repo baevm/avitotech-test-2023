@@ -149,6 +149,9 @@ func (s *Segment) generateCSVReport(userId int64, userHistory []*models.UserHist
 
 	csvWriter := csv.NewWriter(csvFile)
 
+	// Записываем headers
+	csvWriter.Write([]string{"user_id", "segment_slug", "operation", "executed_at"})
+
 	// Записываем слайс значения в файл
 	for _, history := range userHistory {
 		csvWriter.Write([]string{
