@@ -36,7 +36,7 @@ func NewTaskProcessor(r asynq.RedisClientOpt, logger *zap.SugaredLogger, db *pgx
 		Logger: logger,
 	})
 
-	segmentRepo := repo.NewSegment(db)
+	segmentRepo := repo.NewSegmentRepo(db)
 
 	return &RedisTaskProcessor{
 		server:      server,

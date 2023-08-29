@@ -16,13 +16,13 @@ func createUser(t *testing.T, repo *User) int64 {
 }
 
 func Test_CreateUser(t *testing.T) {
-	repo := NewUser(testDbInstance)
+	repo := NewUserRepo(testDbInstance)
 
 	createUser(t, repo)
 }
 
 func Test_CheckUserExist(t *testing.T) {
-	repo := NewUser(testDbInstance)
+	repo := NewUserRepo(testDbInstance)
 
 	userId, err := repo.CreateUser(context.Background())
 	require.NoError(t, err)

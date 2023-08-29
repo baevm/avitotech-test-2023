@@ -40,13 +40,13 @@ func addUserSegments(t *testing.T, repo *Segment, userId int64) []string {
 }
 
 func Test_CreateSegment(t *testing.T) {
-	repo := NewSegment(testDbInstance)
+	repo := NewSegmentRepo(testDbInstance)
 
 	createSegment(t, repo)
 }
 
 func Test_DeleteSegment(t *testing.T) {
-	repo := NewSegment(testDbInstance)
+	repo := NewSegmentRepo(testDbInstance)
 
 	segment := createSegment(t, repo)
 
@@ -55,17 +55,17 @@ func Test_DeleteSegment(t *testing.T) {
 }
 
 func Test_AddUserSegments(t *testing.T) {
-	repo := NewSegment(testDbInstance)
+	repo := NewSegmentRepo(testDbInstance)
 
-	userId := createUser(t, NewUser(testDbInstance))
+	userId := createUser(t, NewUserRepo(testDbInstance))
 
 	addUserSegments(t, repo, userId)
 }
 
 func Test_GetUserSegments(t *testing.T) {
-	repo := NewSegment(testDbInstance)
+	repo := NewSegmentRepo(testDbInstance)
 
-	userId := createUser(t, NewUser(testDbInstance))
+	userId := createUser(t, NewUserRepo(testDbInstance))
 	segments := addUserSegments(t, repo, userId)
 
 	userSegments, err := repo.GetUserSegments(context.Background(), userId)
@@ -81,9 +81,9 @@ func Test_GetUserSegments(t *testing.T) {
 }
 
 func Test_DeleteUserSegments(t *testing.T) {
-	repo := NewSegment(testDbInstance)
+	repo := NewSegmentRepo(testDbInstance)
 
-	userId := createUser(t, NewUser(testDbInstance))
+	userId := createUser(t, NewUserRepo(testDbInstance))
 	segments := addUserSegments(t, repo, userId)
 
 	deletedSegments, err := repo.DeleteUserSegments(context.Background(), userId, segments)
@@ -92,9 +92,9 @@ func Test_DeleteUserSegments(t *testing.T) {
 }
 
 func Test_GetUserHistory(t *testing.T) {
-	repo := NewSegment(testDbInstance)
+	repo := NewSegmentRepo(testDbInstance)
 
-	userId := createUser(t, NewUser(testDbInstance))
+	userId := createUser(t, NewUserRepo(testDbInstance))
 	addUserSegments(t, repo, userId)
 
 	date := time.Now()

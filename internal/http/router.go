@@ -22,14 +22,14 @@ func (s *Server) setHTTPRouter() *chi.Mux {
 		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
 	))
 
-	segmentRepo := repo.NewSegment(s.db)
-	userRepo := repo.NewUser(s.db)
+	segmentRepo := repo.NewSegmentRepo(s.db)
+	userRepo := repo.NewUserRepo(s.db)
 
-	segmentService := service.NewSegment(s.worker, segmentRepo, userRepo)
-	userService := service.NewUser(userRepo)
+	segmentService := service.NewSegmentSvc(s.worker, segmentRepo, userRepo)
+	userService := service.NewUserSvc(userRepo)
 
-	segmentHandler := segment.New(s.logger, segmentService)
-	userHandler := user.New(s.logger, userService)
+	segmentHandler := segment.NewHandler(s.logger, segmentService)
+	userHandler := user.NewHandler(s.logger, userService)
 
 	// Создание пользователя
 	r.Post("/user", userHandler.Create)

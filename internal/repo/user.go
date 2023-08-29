@@ -10,7 +10,7 @@ type User struct {
 	DB *pgxpool.Pool
 }
 
-func NewUser(db *pgxpool.Pool) *User {
+func NewUserRepo(db *pgxpool.Pool) *User {
 	return &User{DB: db}
 }
 

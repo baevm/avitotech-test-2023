@@ -6,7 +6,7 @@ type User struct {
 	userRepo UserRepo
 }
 
-func NewUser(userRepo UserRepo) *User {
+func NewUserSvc(userRepo UserRepo) *User {
 	return &User{
 		userRepo: userRepo,
 	}

@@ -16,7 +16,7 @@ type Segment struct {
 	DB *pgxpool.Pool
 }
 
-func NewSegment(db *pgxpool.Pool) *Segment {
+func NewSegmentRepo(db *pgxpool.Pool) *Segment {
 	return &Segment{DB: db}
 }
 

@@ -1,9 +1,9 @@
 package user
 
 import (
+	"context"
 	"net/http"
 
-	"github.com/dezzerlol/avitotech-test-2023/internal/service"
 	"go.uber.org/zap"
 )
 
@@ -11,12 +11,16 @@ type Handler interface {
 	Create(w http.ResponseWriter, r *http.Request)
 }
 
-type handler struct {
-	logger  *zap.SugaredLogger
-	userSvc *service.User
+type userService interface {
+	Create(ctx context.Context) (int64, error)
 }
 
-func New(logger *zap.SugaredLogger, userSvc *service.User) Handler {
+type handler struct {
+	logger  *zap.SugaredLogger
+	userSvc userService
+}
+
+func NewHandler(logger *zap.SugaredLogger, userSvc userService) Handler {
 	return &handler{
 		logger:  logger,
 		userSvc: userSvc,

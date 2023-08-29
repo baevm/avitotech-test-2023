@@ -34,7 +34,7 @@ type Segment struct {
 	worker      worker.TaskDistributor
 }
 
-func NewSegment(worker worker.TaskDistributor, segmentRepo SegmentRepo, userRepo UserRepo) *Segment {
+func NewSegmentSvc(worker worker.TaskDistributor, segmentRepo SegmentRepo, userRepo UserRepo) *Segment {
 	return &Segment{
 		segmentRepo: segmentRepo,
 		userRepo:    userRepo,
