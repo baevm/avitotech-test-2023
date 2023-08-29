@@ -44,6 +44,10 @@ build/api:
 	@echo 'Building cmd/api'
 	GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin ./cmd/api
 
+## test: runs tests
+.PHONY: test
+test:
+	go test -v ./... 
 
 #=============================================================================
 #========================== DATABASE =========================================
