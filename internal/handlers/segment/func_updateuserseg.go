@@ -1,7 +1,9 @@
 package segment
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/pkg/payload"
 )
@@ -37,8 +39,11 @@ func (h *handler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+	defer cancel()
+
 	segmentsAdded, segmentsDeleted, err := h.segmentSvc.UpdateUserSegments(
-		r.Context(),
+		ctx,
 		req.UserId,
 		req.AddSegments,
 		req.TTL,

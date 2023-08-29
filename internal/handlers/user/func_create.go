@@ -1,7 +1,9 @@
 package user
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/pkg/payload"
 )
@@ -16,7 +18,10 @@ import (
 // @Failure      400  {object} object{error=string}
 // @Router       /user [post]
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
-	userId, err := h.userSvc.Create(r.Context())
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	userId, err := h.userSvc.Create(ctx)
 
 	if err != nil {
 		payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)

@@ -1,8 +1,10 @@
 package segment
 
 import (
+	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
 	"github.com/dezzerlol/avitotech-test-2023/internal/repo"
@@ -40,7 +42,10 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 		Slug: req.Slug,
 	}
 
-	err := h.segmentSvc.DeleteBySlug(r.Context(), segment)
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	err := h.segmentSvc.DeleteBySlug(ctx, segment)
 
 	if err != nil {
 		switch {

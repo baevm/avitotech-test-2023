@@ -1,7 +1,9 @@
 package segment
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/pkg/payload"
 )
@@ -22,7 +24,10 @@ func (h *handler) GetSegmentsForUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	segments, err := h.segmentSvc.GetUserSegments(r.Context(), userId)
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	segments, err := h.segmentSvc.GetUserSegments(ctx, userId)
 
 	if err != nil {
 		payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)

@@ -1,8 +1,10 @@
 package segment
 
 import (
+	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
 	"github.com/dezzerlol/avitotech-test-2023/internal/repo"
@@ -43,7 +45,10 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		UserPercent: req.UserPercent,
 	}
 
-	err := h.segmentSvc.Create(r.Context(), segment)
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	err := h.segmentSvc.Create(ctx, segment)
 
 	if err != nil {
 		switch {

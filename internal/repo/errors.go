@@ -14,4 +14,7 @@ var (
 	// Segment errors
 	ErrSegmentAlreadyExists = errors.New("segment already exists")
 	ErrSegmentNotFound      = errors.New("segment not found")
+
+	// User errors
+	ErrUserNotFound = errors.New("user not found")
 )
