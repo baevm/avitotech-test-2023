@@ -40,6 +40,7 @@ func main() {
 	distributor := worker.NewTaskDistributor(redisOpts, logger)
 	processor := worker.NewTaskProcessor(redisOpts, logger, db)
 
+	// Запускаем обработчик задач в отдельной горутине
 	go func() {
 		err := processor.Start()
 

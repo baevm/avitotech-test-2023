@@ -24,7 +24,7 @@ type UpdateUserSegmentsRequest struct {
 // @Produce      json
 // @Param        body  body  UpdateUserSegmentsRequest  true  "Данные сегмента и пользователя"
 // @Success      200  {object} object{segments_added=int,segments_deleted=int}
-// @Failure      400  {object} object{error=string}
+// @Failure      400,500  {object} object{error=string}
 // @Router       /segment/user [post]
 func (h *handler) UpdateUserSegments(w http.ResponseWriter, r *http.Request) {
 	var req UpdateUserSegmentsRequest

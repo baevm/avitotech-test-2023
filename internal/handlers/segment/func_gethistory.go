@@ -18,7 +18,7 @@ import (
 // @Param        month query int true "месяц"
 // @Param        year query int true "год"
 // @Success      200  {object} object{report=string}
-// @Failure      400  {object} object{error=string}
+// @Failure      400,500  {object} object{error=string}
 // @Router       /segment/history/{userId} [get]
 func (h *handler) GetUserHistory(w http.ResponseWriter, r *http.Request) {
 	userId, err := payload.ParamInt(r, "userId")

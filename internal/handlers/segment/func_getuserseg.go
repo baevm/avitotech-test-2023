@@ -15,7 +15,7 @@ import (
 // @Produce      json
 // @Param        userId path string true "id пользователя"
 // @Success      200  {object} []models.Segment
-// @Failure      400  {object} object{error=string}
+// @Failure      400,500  {object} object{error=string}
 // @Router       /segment/user/{userId} [get]
 func (h *handler) GetSegmentsForUser(w http.ResponseWriter, r *http.Request) {
 	userId, err := payload.ParamInt(r, "userId")

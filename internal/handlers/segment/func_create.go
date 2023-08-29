@@ -19,13 +19,13 @@ type CreateRequest struct {
 // Create godoc
 // @Summary      Создание сегмента
 // @Description  Метод создания сегмента. Принимает slug (название) сегмента.
-// @Description  Если указан user_percent, то сегмент будет добавлен проценту от общего числа случайным пользователям.
+// @Description  Если указан user_percent, то сегмент будет добавлен случайным пользователям в заданном проценте от общего числа.
 // @Tags         Segment
 // @Accept       json
 // @Produce      json
 // @Param        body  body  CreateRequest  true  "Запрос на создание"
 // @Success      201  {object} object{created_at=string}
-// @Failure      400  {object} object{error=string}
+// @Failure      400,500  {object} object{error=string}
 // @Router       /segment [post]
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
