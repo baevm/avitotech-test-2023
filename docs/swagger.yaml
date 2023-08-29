@@ -11,16 +11,24 @@ definitions:
     properties:
       slug:
         example: AVITO_VOICE_MESSAGES
+        minLength: 3
         type: string
       user_percent:
         example: 50
+        maximum: 100
+        minimum: 1
         type: integer
+    required:
+    - slug
     type: object
   segment.DeleteRequest:
     properties:
       slug:
         example: AVITO_VOICE_MESSAGES
+        minLength: 3
         type: string
+    required:
+    - slug
     type: object
   segment.UpdateUserSegmentsRequest:
     properties:
@@ -39,10 +47,14 @@ definitions:
         type: array
       ttl:
         example: 1000
+        minimum: 1
         type: integer
       user_id:
         example: 1
+        minimum: 1
         type: integer
+    required:
+    - user_id
     type: object
 host: localhost:8080
 info:

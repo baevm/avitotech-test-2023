@@ -15,20 +15,6 @@ help:
 run:
 	go run ./cmd/api
 
-## audit: tidy dependencies and format, vet and test all code
-.PHONY: audit
-audit:
-	@echo 'Tidying and verifying module dependencies...'
-	go mod tidy
-	go mod verify
-	@echo 'Formatting code...'
-	go fmt ./...
-	@echo 'Vetting code...'
-	go vet ./...
-	staticcheck ./...
-	@echo 'Running tests...'
-	go test -race -vet=off ./...
-
 ## vendor: tidy and vendor dependencies
 .PHONY: vendor
 vendor:
@@ -86,7 +72,7 @@ compose:
 ## docker/build: builds docker image
 .PHONY: docker/build
 docker/build:
-	docker build --no-cache -t social-network -f ./deploy/Dockerfile .
+	docker build --no-cache -t avito-segments-api -f ./deploy/Dockerfile .
 
 
 #=============================================================================
@@ -102,6 +88,7 @@ swagger:
 #=============================================================================
 #========================== OTHER ============================================
 #=============================================================================
+## asynq-gui: runs asynq gui to monitor queues
 .PHONY: asynq-gui
 asynq-gui:
 	docker run -d --rm \

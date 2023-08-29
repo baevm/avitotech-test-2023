@@ -370,28 +370,41 @@ const docTemplate = `{
         },
         "segment.CreateRequest": {
             "type": "object",
+            "required": [
+                "slug"
+            ],
             "properties": {
                 "slug": {
                     "type": "string",
+                    "minLength": 3,
                     "example": "AVITO_VOICE_MESSAGES"
                 },
                 "user_percent": {
                     "type": "integer",
+                    "maximum": 100,
+                    "minimum": 1,
                     "example": 50
                 }
             }
         },
         "segment.DeleteRequest": {
             "type": "object",
+            "required": [
+                "slug"
+            ],
             "properties": {
                 "slug": {
                     "type": "string",
+                    "minLength": 3,
                     "example": "AVITO_VOICE_MESSAGES"
                 }
             }
         },
         "segment.UpdateUserSegmentsRequest": {
             "type": "object",
+            "required": [
+                "user_id"
+            ],
             "properties": {
                 "add_segments": {
                     "type": "array",
@@ -414,10 +427,12 @@ const docTemplate = `{
                 },
                 "ttl": {
                     "type": "integer",
+                    "minimum": 1,
                     "example": 1000
                 },
                 "user_id": {
                     "type": "integer",
+                    "minimum": 1,
                     "example": 1
                 }
             }
