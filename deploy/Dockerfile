@@ -15,7 +15,7 @@ RUN go mod download
 COPY ../ .
 
 # Build the Go app
-RUN GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin ./cmd/api
+RUN GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin/api ./cmd/api
 
 # Start fresh from a smaller image
 FROM alpine:latest
