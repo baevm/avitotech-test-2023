@@ -129,7 +129,7 @@ curl --request GET 'http://localhost:8080/segment/user/1'
 
 Запрос:
 ```
-curl --request GET 'http://localhost:8080/segment/history/1?year=2023&month=8'
+curl --request GET 'http://localhost:8080/segment/history/1?year=2023&month=9'
 ```
 
 Ответ:
