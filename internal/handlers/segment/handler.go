@@ -20,7 +20,8 @@ type Handler interface {
 	DownloadReport(w http.ResponseWriter, r *http.Request)
 }
 
-type segmentService interface {
+//go:generate mockgen -destination=mocks/mock_segment.go -package=mocks github.com/dezzerlol/avitotech-test-2023/internal/handlers/segment SegmentService
+type SegmentService interface {
 	Create(ctx context.Context, segment *models.Segment) error
 	DeleteBySlug(ctx context.Context, segment *models.Segment) error
 	GetUserSegments(ctx context.Context, userId int64) ([]*models.Segment, error)
@@ -30,11 +31,11 @@ type segmentService interface {
 
 type handler struct {
 	logger     *zap.SugaredLogger
-	segmentSvc segmentService
+	segmentSvc SegmentService
 	config     *cfg.Config
 }
 
-func NewHandler(logger *zap.SugaredLogger, segment segmentService) Handler {
+func NewHandler(logger *zap.SugaredLogger, segment SegmentService) Handler {
 	return &handler{
 		logger:     logger,
 		segmentSvc: segment,

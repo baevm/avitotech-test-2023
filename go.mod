@@ -6,6 +6,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-playground/validator/v10 v10.15.1
 	github.com/golang-migrate/migrate/v4 v4.16.2
+	github.com/golang/mock v1.4.4
 	github.com/hibiken/asynq v0.24.1
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/spf13/viper v1.16.0
