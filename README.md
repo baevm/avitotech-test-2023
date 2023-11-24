@@ -134,7 +134,7 @@ curl --request GET 'http://localhost:8080/segment/history/1?year=2023&month=9'
 
 Ответ:
 ```
-{"report":"localhost:8080/segment/reports/1-1693218476.csv"}
+{"report_link":"localhost:8080/segment/reports/1-1693218476.csv"}
 ```
 
 ### 7. **Скачивание отчета по сегментам**

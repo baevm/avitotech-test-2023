@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/dezzerlol/avitotech-test-2023/cfg"
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
 	"go.uber.org/zap"
 )
@@ -32,13 +31,11 @@ type SegmentService interface {
 type handler struct {
 	logger     *zap.SugaredLogger
 	segmentSvc SegmentService
-	config     *cfg.Config
 }
 
 func NewHandler(logger *zap.SugaredLogger, segment SegmentService) Handler {
 	return &handler{
 		logger:     logger,
 		segmentSvc: segment,
-		config:     cfg.Get(),
 	}
 }

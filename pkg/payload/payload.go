@@ -123,7 +123,13 @@ func QueryInt(r *http.Request, key string) (int64, error) {
 		return 0, errors.New("empty query param")
 	}
 
-	return strconv.ParseInt(value, 10, 64)
+	query, err := strconv.ParseInt(value, 10, 64)
+
+	if err != nil {
+		return 0, errors.New("invalid query param")
+	}
+
+	return query, nil
 }
 
 func ParamInt(r *http.Request, key string) (int64, error) {
@@ -133,5 +139,11 @@ func ParamInt(r *http.Request, key string) (int64, error) {
 		return 0, errors.New("empty param")
 	}
 
-	return strconv.ParseInt(paramStr, 10, 64)
+	param, err := strconv.ParseInt(paramStr, 10, 64)
+
+	if err != nil {
+		return 0, errors.New("invalid param")
+	}
+
+	return param, nil
 }

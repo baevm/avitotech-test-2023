@@ -2,7 +2,6 @@ package segment
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -17,7 +16,7 @@ import (
 // @Param        userId path string true "id пользователя"
 // @Param        month query int true "месяц"
 // @Param        year query int true "год"
-// @Success      200  {object} object{report=string}
+// @Success      200  {object} object{report_link=string}
 // @Failure      400,500  {object} object{error=string}
 // @Router       /segment/history/{userId} [get]
 func (h *handler) GetUserHistory(w http.ResponseWriter, r *http.Request) {
@@ -42,16 +41,12 @@ func (h *handler) GetUserHistory(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
-	filePath, err := h.segmentSvc.GetUserHistory(ctx, userId, month, year)
+	downloadLink, err := h.segmentSvc.GetUserHistory(ctx, userId, month, year)
 
 	if err != nil {
 		payload.WriteJSON(w, http.StatusInternalServerError, payload.Data{"error": "Internal server error"}, nil)
 		return
 	}
 
-	// Ссылка для скачивания файла в формате addr:port/segment/reports/file_name.csv
-	addr := fmt.Sprintf("%s:%s", h.config.REPORTS_HOST, h.config.API_PORT)
-	downloadLink := addr + "/segment" + filePath
-
-	payload.WriteJSON(w, http.StatusOK, payload.Data{"report": downloadLink}, nil)
+	payload.WriteJSON(w, http.StatusOK, payload.Data{"report_link": downloadLink}, nil)
 }

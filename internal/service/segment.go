@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/dezzerlol/avitotech-test-2023/cfg"
 	"github.com/dezzerlol/avitotech-test-2023/internal/db/models"
 	"github.com/dezzerlol/avitotech-test-2023/internal/worker"
 )
@@ -132,7 +133,17 @@ func (s *Segment) GetUserHistory(ctx context.Context, userId, month, year int64)
 		return "", err
 	}
 
-	return s.generateCSVReport(userId, userHistory)
+	filePath, err := s.generateCSVReport(userId, userHistory)
+
+	if err != nil {
+		return "", err
+	}
+
+	// Ссылка для скачивания файла в формате addr:port/segment/reports/file_name.csv
+	addr := fmt.Sprintf("%s:%s", cfg.Get().REPORTS_HOST, cfg.Get().API_PORT)
+	downloadLink := addr + "/segment" + filePath
+
+	return downloadLink, err
 }
 
 func (s *Segment) generateCSVReport(userId int64, userHistory []*models.UserHistory) (string, error) {
