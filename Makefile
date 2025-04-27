@@ -74,6 +74,14 @@ db/migration:
 compose:
 	docker compose -f ./deploy/docker-compose.yml --env-file .env up
 
+.PHONY: compose/build
+compose/build:
+	docker compose -f ./deploy/docker-compose.yml --env-file .env up --build
+
+.PHONY: compose/down
+compose/down:
+	docker compose -f ./deploy/docker-compose.yml --env-file .env down
+
 ## docker/build: builds docker image
 .PHONY: docker/build
 docker/build:

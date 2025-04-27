@@ -40,7 +40,37 @@ services:
     networks:
       - local
     restart: unless-stopped
+
+  
+  prometheus:
+    container_name: segments-prometheus
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    networks:
+      - local
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    container_name: segments-grafana
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    networks:
+      - local
+    depends_on:
+      - prometheus
   
 networks:
   local:
     driver: bridge
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}

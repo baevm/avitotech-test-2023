@@ -1,10 +1,15 @@
 package http
 
 import (
+	"net/http"
+
 	"github.com/dezzerlol/avitotech-test-2023/internal/handlers/segment"
 	"github.com/dezzerlol/avitotech-test-2023/internal/handlers/user"
 	"github.com/dezzerlol/avitotech-test-2023/internal/repo"
 	"github.com/dezzerlol/avitotech-test-2023/internal/service"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	_ "github.com/dezzerlol/avitotech-test-2023/docs"
 	"github.com/go-chi/chi/v5"
@@ -12,15 +17,34 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
+var (
+	reqTotal = promauto.NewCounter(
+		prometheus.CounterOpts{
+			Name: "segment_app_request_total",
+			Help: "Total number of requests received",
+		},
+	)
+)
+
+func totalRequestsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		reqTotal.Inc()
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (s *Server) setHTTPRouter() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.StripSlashes)
 	r.Use(middleware.Recoverer)
+	r.Use(totalRequestsMiddleware)
 
 	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
 	))
+
+	r.Handle("/metrics", promhttp.Handler())
 
 	segmentRepo := repo.NewSegmentRepo(s.db)
 	userRepo := repo.NewUserRepo(s.db)

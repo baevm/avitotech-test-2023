@@ -13,7 +13,7 @@ import (
 
 // @title          Avitotech Test 2023 API
 // @version         1.0
-// @description     Тествое задание для стажировки Avitotech 2023
+// @description     Тестовое задание для стажировки Avitotech 2023
 
 // @host      localhost:8080
 // @BasePath  /
